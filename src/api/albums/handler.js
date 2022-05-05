@@ -1,6 +1,9 @@
+const ClientError = require("../../exceptions/ClientError");
+
 class AlbumHandler{
-  constructor(service){
+  constructor(service, validator){
     this._service = service;
+    this._validator = validator;
 
     this.postAlbumHandler = this.postAlbumHandler.bind(this);
     this.getAlbumHandler = this.getAlbumHandler.bind(this);
@@ -11,6 +14,7 @@ class AlbumHandler{
 
   postAlbumHandler(request, h){
     try {
+      this._validator.validateAlbumPayload(request.payload);
       const { name, year } = request.payload;
   
       const albumId = this._service.addAlbum({name, year});
@@ -64,14 +68,35 @@ class AlbumHandler{
     }
   }
   
-  putAlbumByIdHandler(request){
-    const { id } = request.params;
-
-    this._service.editAlbumById(id, request.payload);
-    return {
-      status: 'success',
-      message: 'Album berhasil diperbarui',
-    };
+  putAlbumByIdHandler(request, h){
+    try{
+      this._validator.validateAlbumPayload(request.payload);
+      const { id } = request.params;
+  
+      this._service.editAlbumById(id, request.payload);
+      return {
+        status: 'success',
+        message: 'Album berhasil diperbarui',
+      };
+    }catch (error) {
+      if (error instanceof ClientError) {
+        const response = h.response({
+          status: 'fail',
+          message: error.message,
+        });
+        response.code(error.statusCode);
+        return response;
+      }
+ 
+      // Server ERROR!
+      const response = h.response({
+        status: 'fail',
+        message: 'Maaf, terjadi kegagalan pada server kami.',
+      });
+      response.code(400);
+      console.error(error);
+      return response;
+    }
   }
   
   deleteAlbumByIdHandler(request,h){
@@ -82,12 +107,23 @@ class AlbumHandler{
         status: 'success',
         message: 'Album berhasil dihapus',
       }
-    }catch(error){
+    }catch (error) {
+      if (error instanceof ClientError) {
+        const response = h.response({
+          status: 'fail',
+          message: error.message,
+        });
+        response.code(error.statusCode);
+        return response;
+      }
+ 
+      // Server ERROR!
       const response = h.response({
         status: 'fail',
-        message: 'Album gagal dihapus. Id tidak ditemukan',
+        message: 'Maaf, terjadi kegagalan pada server kami.',
       });
-      response.code(404);
+      response.code(500);
+      console.error(error);
       return response;
     }
   }
