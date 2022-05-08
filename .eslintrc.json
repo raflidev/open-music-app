@@ -12,5 +12,7 @@
     "rules": {
         "no-console": "off",
         "linebreak-style": "off",
+        "camelcase": "off",
+        "no-underscore-dangle": "off"
     }
 }

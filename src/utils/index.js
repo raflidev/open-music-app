@@ -1,4 +1,4 @@
-const mapDBToModel = ({ 
+const mapDBToModel = ({
   id,
   name,
   year,
@@ -12,7 +12,7 @@ const mapDBToModel = ({
   updatedAt: updated_at,
 });
 
-const mapDBToModelSong = ({ 
+const mapDBToModelSong = ({
   id,
   title,
   year,

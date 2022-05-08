@@ -1,4 +1,4 @@
-const { SongPayloadSchema } = require("./schema")
+const { SongPayloadSchema } = require('./schema');
 
 const SongValidator = {
   validateSongPayload: (payload) => {
@@ -7,6 +7,6 @@ const SongValidator = {
       throw new Error(validationResult.error.message);
     }
   },
-}
+};
 
 module.exports = SongValidator;

@@ -1,4 +1,4 @@
-const { AlbumPayloadSchema } = require("./schema")
+const { AlbumPayloadSchema } = require('./schema');
 
 const AlbumValidator = {
   validateAlbumPayload: (payload) => {
@@ -7,6 +7,6 @@ const AlbumValidator = {
       throw new Error(validationResult.error.message);
     }
   },
-}
+};
 
 module.exports = AlbumValidator;
